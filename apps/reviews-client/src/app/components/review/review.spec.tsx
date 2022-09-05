@@ -1,7 +1,6 @@
 import { Company, User } from '@prisma/client';
 import { render } from '@testing-library/react';
-import { ReviewProps } from '../review/review';
-import ReviewsList from './reviews-list';
+import { ReviewProps, ReviewCard } from './review';
 
 describe('ReviewsList', () => {
 	const user1Id = 'user-1';
@@ -9,8 +8,8 @@ describe('ReviewsList', () => {
 	const company1Id = 'company-1';
 	const company2Id = 'company-2';
 	const user1: User = {
-		firstName: 'Jake',
-		lastName: 'Lamb',
+		firstName: '',
+		lastName: '',
 		email: 'my@email.com',
 		id: user1Id,
 	};
@@ -63,29 +62,20 @@ describe('ReviewsList', () => {
 	];
 
 	it('should render successfully', () => {
-		const { baseElement } = render(<ReviewsList reviews={[]} />);
+		const { baseElement } = render(<ReviewCard {...reviews[0]} />);
 		expect(baseElement).toBeTruthy();
 	});
 
-	it('should render list of reviews', () => {
-		const { getAllByTestId } = render(<ReviewsList reviews={reviews} />);
-		expect(getAllByTestId('reviewCard').length).toBe(3);
+	it('should display "Anonymous" for name if no name is provided', () => {
+		const { queryByText } = render(<ReviewCard {...reviews[0]} />);
+		expect(queryByText(/anonymous/i)).toBeTruthy();
 	});
 
-	it('should display message if no reviews are found', () => {
-		const { queryByText } = render(<ReviewsList reviews={[]} />);
-		expect(queryByText(/No reviews found/i)).toBeTruthy();
+	it('should display the review text if provided', () => {
+		const { queryByText, getAllByTestId } = render(<ReviewCard {...reviews[0]} />);
+		expect(getAllByTestId('reviewCard')).toBeTruthy();
+		expect(queryByText(reviews[0].reviewText as string)).toBeTruthy();
 	});
-
-	/**
-	 * moving this test to the tests for the ReviewCard
-	 *
-	 *	it('should display the review text if provided', () => {
-	 *		const { queryByText, getAllByTestId } = render(<ReviewsList reviews={reviews} />);
-	 *		expect(getAllByTestId("reviewCard")).toBeTruthy();
-	 *		expect(queryByText(reviews[0].reviewText as string)).toBeTruthy();
-	 *	});
-	 */
 
 	// Feel free to add any additional tests you think are necessary
 });

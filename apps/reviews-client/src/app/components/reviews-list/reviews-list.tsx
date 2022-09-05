@@ -1,14 +1,20 @@
-import Alert from '@mui/material/Alert';
-import TaskIcon from '@mui/icons-material/Task';
+import { Stack, Typography } from '@mui/material';
+import { ReviewProps, ReviewCard } from '../review/review';
 
-/* eslint-disable-next-line */
-export interface ReviewsListProps {}
+export interface ReviewsListProps {
+	reviews: ReviewProps[];
+}
 
 export function ReviewsList(props: ReviewsListProps) {
+	if (props.reviews.length === 0) {
+		return <Typography>No reviews found</Typography>;
+	}
 	return (
-		<Alert severity="error" icon={<TaskIcon />}>
-			TODO: Implement ReviewsList
-		</Alert>
+		<Stack spacing={1}>
+			{props.reviews.map((review) => {
+				return <ReviewCard key={review.id} {...review} />;
+			})}
+		</Stack>
 	);
 }
 
